@@ -3,34 +3,32 @@ package com.ud.mygolfclub
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.room.Room
-import com.ud.mygolfclub.ui.data.db.AppDB
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import com.ud.mygolfclub.data.db.GolfDB
+import com.ud.mygolfclub.data.repository.ClientRepository
+import com.ud.mygolfclub.ui.screen.HomeScreen
 import com.ud.mygolfclub.ui.screen.LoginScreen
-import com.ud.mygolfclub.ui.screen.VM.LoginVM
-import com.ud.mygolfclub.ui.theme.MyGolfClubTheme
+import com.ud.mygolfclub.ui.session.SessionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDB::class.java,
-            "golf_db"
-        ).build()
+        val db = GolfDB.getDB(this)
+        val dao = db.ClientDAO()
+        val repo = ClientRepository(dao)
 
-        enableEdgeToEdge()
         setContent {
-            val viewM = LoginVM(db.ClientDAO())
-            LoginScreen(viewM)
+            val context = LocalContext.current
+            var isLoggedIn by remember {
+                mutableStateOf(SessionManager.isLoggedIn(context))
+            }
+            if (isLoggedIn) {
+                HomeScreen(onLogout = { isLoggedIn = false })
+            } else {
+                LoginScreen(onLoginSuccess = { isLoggedIn = true })
+            }
         }
     }
 }

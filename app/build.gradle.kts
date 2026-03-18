@@ -20,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -38,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    //ksp {
+        //arg("room.schemaLocation", "$projectDir/schemas")
+    //}
 }
 
 dependencies {
@@ -52,6 +57,8 @@ dependencies {
 
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
     // ROOM
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
