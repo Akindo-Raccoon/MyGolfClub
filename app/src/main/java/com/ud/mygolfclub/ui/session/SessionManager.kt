@@ -2,6 +2,7 @@ package com.ud.mygolfclub.ui.session
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 object SessionManager {
     private const val PREF_NAME = "golf_session"
@@ -14,12 +15,12 @@ object SessionManager {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     fun saveSession(context: Context, id: String, name: String, phone: String) {
-        prefs(context).edit()
-            .putString(KEY_CLIENT_ID, id)
-            .putString(KEY_CLIENT_NAME, name)
-            .putString(KEY_CLIENT_PHONE, phone)
-            .putBoolean(KEY_LOGGED_IN, true)
-            .apply()
+        prefs(context).edit {
+            putString(KEY_CLIENT_ID, id)
+                .putString(KEY_CLIENT_NAME, name)
+                .putString(KEY_CLIENT_PHONE, phone)
+                .putBoolean(KEY_LOGGED_IN, true)
+        }
     }
 
     fun isLoggedIn(context: Context): Boolean =
@@ -35,6 +36,6 @@ object SessionManager {
         prefs(context).getString(KEY_CLIENT_PHONE, "") ?: ""
 
     fun clearSession(context: Context) {
-        prefs(context).edit().clear().apply()
+        prefs(context).edit { clear() }
     }
 }
